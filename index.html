@@ -676,6 +676,23 @@
 
     .zoom-controls button:hover { background: #cbd5e1; filter: none; box-shadow: none; }
 
+    .fit-btn {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    @media (max-width: 980px) {
+      .fit-btn {
+        background: var(--accent) !important;
+        color: #fff !important;
+        font-size: 13px !important;
+        padding: 6px 14px !important;
+        border-radius: 6px;
+        font-weight: 700;
+        min-height: 32px;
+      }
+    }
+
     .zoom-controls span {
       font-size: 12px;
       font-weight: 700;
@@ -1110,7 +1127,7 @@
                 <button type="button" id="zoomOut">−</button>
                 <span id="zoomLevel">100%</span>
                 <button type="button" id="zoomIn">+</button>
-                <button type="button" id="zoomFit" class="ghost" style="font-size:11px;padding:4px 6px">适应</button>
+                <button type="button" id="zoomFit" class="ghost fit-btn">适应屏幕</button>
               </div>
               <span id="sizeText">160 x 160</span>
             </div>
@@ -1735,6 +1752,7 @@
       const t0 = performance.now();
       showProgress(10);
       statusText.textContent = "正在生成…";
+      empty.hidden = true;
 
       requestAnimationFrame(() => {
         const beadWidth = clamp(parseInt(widthInput.value || "160", 10), 8, 600);
@@ -1824,6 +1842,8 @@
         materialsButton.disabled = false;
         zoomControls.style.display = "flex";
         legendSearchWrap.style.display = "block";
+
+        if (window.innerWidth <= 980) zoomToFit();
 
         const elapsed = Math.round(performance.now() - t0);
         statusText.textContent = `图纸已生成 (${elapsed}ms)`;
