@@ -735,6 +735,25 @@
     }
     .empty[hidden] { display: none !important; }
 
+    .float-fit {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+      min-height: 40px;
+    }
+    .float-fit:active { opacity: .8; }
+    .float-fit[hidden] { display: none !important; }
+
     .empty strong { font-size: 16px; color: #475569; display: block; margin-bottom: 6px; }
 
     .stat {
@@ -1134,6 +1153,7 @@
             </div>
           </div>
           <div class="canvas-box" id="canvasBox">
+            <button type="button" id="floatFit" class="float-fit" hidden>适应屏幕</button>
             <div id="empty" class="empty">
               <div>
                 <strong>把图片变成拼豆图纸</strong>
@@ -1358,6 +1378,7 @@
     const canvasInner = $("canvasInner");
     const canvasBox = $("canvasBox");
     const empty = $("empty");
+    const floatFit = $("floatFit");
     const statusText = $("status");
     const sizeText = $("sizeText");
     const finalSize = $("finalSize");
@@ -1842,6 +1863,7 @@
         pagedPngButton.disabled = false;
         materialsButton.disabled = false;
         zoomControls.style.display = "flex";
+        floatFit.hidden = false;
         legendSearchWrap.style.display = "block";
 
         if (window.innerWidth <= 980) requestAnimationFrame(() => zoomToFit());
@@ -1934,6 +1956,7 @@
     $("zoomIn").addEventListener("click", () => { canvasZoom = Math.min(3, canvasZoom + 0.25); applyZoom(); });
     $("zoomOut").addEventListener("click", () => { canvasZoom = Math.max(0.1, canvasZoom - 0.25); applyZoom(); });
     $("zoomFit").addEventListener("click", zoomToFit);
+    floatFit.addEventListener("click", zoomToFit);
 
     canvasBox.addEventListener("wheel", (e) => {
       if (!pattern.length) return;
@@ -2281,7 +2304,7 @@
     thumbRemove.addEventListener("click", () => {
       sourceImage = null; sourceFileName = ""; pattern = []; counts = new Map(); file.value = "";
       thumbWrap.classList.remove("visible"); dropZone.style.display = "";
-      empty.hidden = false; canvasInner.hidden = true; zoomControls.style.display = "none"; legendSearchWrap.style.display = "none";
+      empty.hidden = false; canvasInner.hidden = true; zoomControls.style.display = "none"; legendSearchWrap.style.display = "none"; floatFit.hidden = true;
       statusText.textContent = "等待导入图片"; finalSize.textContent = "-"; totalBeads.textContent = "-"; colorCount.textContent = "-";
       legend.innerHTML = "";
       pngButton.disabled = true; svgButton.disabled = true; pagedSvgButton.disabled = true; pagedPngButton.disabled = true; materialsButton.disabled = true;
