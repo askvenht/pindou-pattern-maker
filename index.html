@@ -1386,8 +1386,8 @@
     const colorCount = $("colorCount");
     const legend = $("legend");
     const pngButton = $("png");
-    const svgButton = $("svg");
-    const pagedSvgButton = $("pagedSvg");
+    const svgButton = $("svg") || { disabled: true, addEventListener() {} };
+    const pagedSvgButton = $("pagedSvg") || { disabled: true, addEventListener() {} };
     const pagedPngButton = $("pagedPng");
     const materialsButton = $("materials");
     const dropZone = $("dropZone");
