@@ -699,6 +699,16 @@
       padding: 4px 8px;
     }
 
+    .pixel-toggle {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+    .pixel-toggle.active {
+      background: #7c3aed !important;
+      color: #fff !important;
+      opacity: 1;
+    }
+
     @media (max-width: 980px) {
       .fit-btn {
         background: var(--accent) !important;
@@ -1194,6 +1204,7 @@
           <button id="generate">生成图纸 <span class="cdk-cost">🪙1</span></button>
           <button id="print" class="ghost">打印</button>
           <button id="png" class="secondary" disabled>导出 PNG <span class="cdk-cost">🪙1</span></button>
+          <button id="pixelArt" class="secondary" disabled>导出像素画 PNG</button>
           <button id="pagedPng" class="secondary wide" disabled>导出分页 PNG <span class="cdk-cost">🪙2</span></button>
           <button id="materials" class="secondary" disabled>导出清单</button>
         </div>
@@ -1212,6 +1223,7 @@
                 <button type="button" id="zoomIn">+</button>
                 <button type="button" id="zoomFit" class="ghost fit-btn">适应屏幕</button>
               </div>
+              <button type="button" id="pixelPreviewToggle" class="ghost pixel-toggle" style="display:none">像素画预览</button>
               <span id="sizeText">160 x 160</span>
             </div>
           </div>
@@ -1480,10 +1492,13 @@
     const colorCount = $("colorCount");
     const legend = $("legend");
     const pngButton = $("png");
+    const pixelArtButton = $("pixelArt");
     const svgButton = $("svg") || { disabled: true, addEventListener() {} };
     const pagedSvgButton = $("pagedSvg") || { disabled: true, addEventListener() {} };
     const pagedPngButton = $("pagedPng");
     const materialsButton = $("materials");
+    const pixelPreviewToggle = $("pixelPreviewToggle");
+    let pixelArtMode = false;
     const dropZone = $("dropZone");
     const thumbWrap = $("thumbWrap");
     const thumbImg = $("thumbImg");
@@ -2079,12 +2094,14 @@
         renderPattern();
         renderSummary();
         pngButton.disabled = false;
+        pixelArtButton.disabled = false;
         svgButton.disabled = false;
         pagedSvgButton.disabled = false;
         pagedPngButton.disabled = false;
         materialsButton.disabled = false;
         zoomControls.style.display = "flex";
         floatFit.hidden = false;
+        pixelPreviewToggle.style.display = "";
         legendSearchWrap.style.display = "block";
 
         if (window.innerWidth <= 980) requestAnimationFrame(() => zoomToFit());
@@ -2107,6 +2124,22 @@
       if (!pattern.length) return;
       const beadHeight = pattern.length;
       const beadWidth = pattern[0].length;
+
+      if (pixelArtMode) {
+        // pixel art view: no grid, no labels, pure color squares
+        const scale = Math.max(2, Math.min(12, Math.floor(800 / Math.max(beadWidth, beadHeight))));
+        canvas.width = beadWidth * scale;
+        canvas.height = beadHeight * scale;
+        for (let y = 0; y < beadHeight; y++) {
+          for (let x = 0; x < beadWidth; x++) {
+            const color = pattern[y][x];
+            ctx.fillStyle = `rgb(${color[2].join(",")})`;
+            ctx.fillRect(x * scale, y * scale, scale, scale);
+          }
+        }
+        return;
+      }
+
       const cell = parseInt(cellInput.value, 10);
       const labelSpace = 28;
       canvas.width = beadWidth * cell + labelSpace;
@@ -2497,6 +2530,28 @@
       showToast("分页 PNG 已导出（含拼接指引图）");
     }
 
+    function exportPixelArtPng() {
+      if (!pattern.length) return;
+      const bh = pattern.length, bw = pattern[0].length;
+      const scale = Math.max(4, Math.floor(1200 / Math.max(bw, bh)));
+      const pc = document.createElement("canvas");
+      pc.width = bw * scale;
+      pc.height = bh * scale;
+      const pctx = pc.getContext("2d");
+      for (let y = 0; y < bh; y++) {
+        for (let x = 0; x < bw; x++) {
+          const color = pattern[y][x];
+          pctx.fillStyle = `rgb(${color[2].join(",")})`;
+          pctx.fillRect(x * scale, y * scale, scale, scale);
+        }
+      }
+      const a = document.createElement("a");
+      a.href = pc.toDataURL("image/png");
+      a.download = "pixel-art.png";
+      a.click();
+      showToast("像素画 PNG 已导出");
+    }
+
     function exportMaterialsPng() {
       if (!pattern.length) return;
       const palette = palettes[paletteInput.value];
@@ -2619,9 +2674,10 @@
       sourceImage = null; sourceFileName = ""; pattern = []; counts = new Map(); file.value = ""; hasGeneratedOnce = false;
       thumbWrap.classList.remove("visible"); dropZone.style.display = "";
       empty.hidden = false; canvasInner.hidden = true; zoomControls.style.display = "none"; legendSearchWrap.style.display = "none"; floatFit.hidden = true;
+      pixelPreviewToggle.style.display = "none"; pixelArtMode = false; pixelPreviewToggle.classList.remove("active"); pixelPreviewToggle.textContent = "像素画预览";
       statusText.textContent = "等待导入图片"; finalSize.textContent = "-"; totalBeads.textContent = "-"; colorCount.textContent = "-";
       legend.innerHTML = "";
-      pngButton.disabled = true; svgButton.disabled = true; pagedSvgButton.disabled = true; pagedPngButton.disabled = true; materialsButton.disabled = true;
+      pngButton.disabled = true; pixelArtButton.disabled = true; svgButton.disabled = true; pagedSvgButton.disabled = true; pagedPngButton.disabled = true; materialsButton.disabled = true;
     });
 
     function syncSliderVal(slider, display, suffix = "") {
@@ -2698,6 +2754,16 @@
       if (!spendCredits(1)) { showToast("积分不足（需要 1 积分）"); return; }
       const a = document.createElement("a"); a.href = canvas.toDataURL("image/png"); a.download = "pindou-pattern.png"; a.click();
       showToast("PNG 已导出");
+    });
+
+    pixelArtButton.addEventListener("click", exportPixelArtPng);
+
+    pixelPreviewToggle.addEventListener("click", () => {
+      pixelArtMode = !pixelArtMode;
+      pixelPreviewToggle.classList.toggle("active", pixelArtMode);
+      pixelPreviewToggle.textContent = pixelArtMode ? "切回图纸" : "像素画预览";
+      renderPattern();
+      requestAnimationFrame(() => zoomToFit());
     });
 
     svgButton.addEventListener("click", () => {
