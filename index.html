@@ -1124,7 +1124,9 @@
         <div class="group-body">
           <label for="palette">颜色库</label>
           <select id="palette">
-            <option value="mard221">MARD 221</option>
+            <option value="mard221">MARD 221 色</option>
+            <option value="artkalA">Artkal A 系 228 色</option>
+            <option value="hama">Hama 68 色</option>
           </select>
           <label for="maxColors">最大颜色</label>
           <select id="maxColors">
@@ -1167,6 +1169,7 @@
       <div class="group">
         <div class="group-title" data-toggle><span>显示</span></div>
         <div class="group-body">
+          <label class="check"><input id="autoPreview" type="checkbox" checked> 实时预览</label>
           <label class="check"><input id="mirror" type="checkbox"> 水平镜像</label>
           <label class="check"><input id="symbols" type="checkbox" checked> 颜色编号</label>
           <label class="check"><input id="grid" type="checkbox" checked> 格线</label>
@@ -1390,11 +1393,11 @@
       ];
     }
 
-    function parsePalette(source) {
+    function parsePalette(source, brand) {
       return source.trim().split(/\s+/).map((entry) => {
         const [code, hex] = entry.split(":");
         const rgb = hexToRgb(hex);
-        return [code, `MARD ${code}`, rgb, null];
+        return [code, `${brand || ""} ${code}`.trim(), rgb, null];
       });
     }
 
@@ -1409,7 +1412,35 @@
         G1:#FFE2CE G2:#FFC4AA G3:#F4C3A5 G4:#E1B383 G5:#EDB045 G6:#E99C17 G7:#9D5B3E G8:#753832 G9:#E6B483 G10:#D98C39 G11:#E0C593 G12:#FFC890 G13:#B7714A G14:#8D614C G15:#FCF9E0 G16:#F2D9BA G17:#78524B G18:#FFE4CC G19:#E07935 G20:#A94023 G21:#B88558
         H1:#FDFBFF H2:#FEFFFF H3:#B6B1BA H4:#89858C H5:#48464E H6:#2F2B2F H7:#000000 H8:#E7D6DB H9:#EDEDED H10:#EEE9EA H11:#CECDD5 H12:#FFF5ED H13:#F5ECD2 H14:#CFD7D3 H15:#98A6A8 H16:#1D1414 H17:#F1EDED H18:#FFFDF0 H19:#F6EFE2 H20:#949FA3 H21:#FFFBE1 H22:#CACAD4 H23:#9A9D94
         M1:#BCC6B8 M2:#8AA386 M3:#697D80 M4:#E3D2BC M5:#D0CCAA M6:#B0A782 M7:#B4A497 M8:#B38281 M9:#A58767 M10:#C5B2BC M11:#9F7594 M12:#644749 M13:#D19066 M14:#C77362 M15:#757D78
-      `)
+      `, "MARD"),
+
+      artkalA: parsePalette(`
+        A01:#FFFFFF A02:#FFFDE6 A03:#FFF9B0 A04:#FFEF62 A05:#FFE324 A06:#FFD700 A07:#FFC800 A08:#FFB300 A09:#FF9F00 A10:#FF8C00 A11:#FF7700 A12:#FF5500 A13:#FF3300 A14:#FF0000 A15:#E60000 A16:#CC0000
+        A17:#B30000 A18:#990000 A19:#800000 A20:#660000 A21:#FFCCCC A22:#FF9999 A23:#FF6666 A24:#FF3366 A25:#FF0066 A26:#CC0052 A27:#990040 A28:#FF99CC A29:#FF66B2 A30:#FF3399 A31:#FF0080 A32:#CC0066
+        A33:#FFCCFF A34:#FF99FF A35:#FF66FF A36:#FF00FF A37:#CC00CC A38:#990099 A39:#660066 A40:#CC99FF A41:#9966FF A42:#6633FF A43:#6600FF A44:#5500CC A45:#440099 A46:#330066 A47:#9999FF A48:#6666FF
+        A49:#3333FF A50:#0000FF A51:#0000CC A52:#000099 A53:#000066 A54:#99CCFF A55:#6699FF A56:#3366FF A57:#0033FF A58:#0033CC A59:#003399 A60:#66CCFF A61:#33AAFF A62:#0099FF A63:#0088EE A64:#0077CC
+        A65:#006699 A66:#99FFFF A67:#66FFFF A68:#33FFFF A69:#00FFFF A70:#00CCCC A71:#009999 A72:#006666 A73:#99FFCC A74:#66FF99 A75:#33FF66 A76:#00FF33 A77:#00CC29 A78:#009922 A79:#006618 A80:#CCFFCC
+        A81:#99FF99 A82:#66FF66 A83:#33FF33 A84:#00FF00 A85:#00CC00 A86:#009900 A87:#006600 A88:#CCFF66 A89:#AAFF33 A90:#88FF00 A91:#77DD00 A92:#66BB00 A93:#558800 A94:#FFFF99 A95:#FFFF66 A96:#FFFF33
+        A97:#FFD54F A98:#FFC107 A99:#FFA726 A100:#FF8F00 A101:#EF6C00 A102:#E65100 A103:#D84315 A104:#BF360C A105:#8D6E63 A106:#795548 A107:#6D4C41 A108:#5D4037 A109:#4E342E A110:#3E2723 A111:#FFAB91
+        A112:#FF8A65 A113:#FF7043 A114:#F4511E A115:#FF6E40 A116:#FF3D00 A117:#DD2C00 A118:#BCAAA4 A119:#A1887F A120:#D7CCC8 A121:#EFEBE9 A122:#FBE9E7 A123:#FCE4EC A124:#F8BBD0 A125:#F48FB1 A126:#EC407A
+        A127:#E91E63 A128:#C2185B A129:#AD1457 A130:#880E4F A131:#F3E5F5 A132:#CE93D8 A133:#AB47BC A134:#9C27B0 A135:#7B1FA2 A136:#6A1B9A A137:#4A148C A138:#E8EAF6 A139:#9FA8DA A140:#7986CB A141:#5C6BC0
+        A142:#3F51B5 A143:#3949AB A144:#283593 A145:#1A237E A146:#E3F2FD A147:#90CAF9 A148:#42A5F5 A149:#2196F3 A150:#1976D2 A151:#1565C0 A152:#0D47A1 A153:#E1F5FE A154:#4FC3F7 A155:#03A9F4 A156:#0288D1
+        A157:#01579B A158:#E0F7FA A159:#4DD0E1 A160:#00BCD4 A161:#00838F A162:#006064 A163:#E0F2F1 A164:#4DB6AC A165:#009688 A166:#00796B A167:#004D40 A168:#E8F5E9 A169:#81C784 A170:#4CAF50 A171:#388E3C
+        A172:#1B5E20 A173:#F1F8E9 A174:#AED581 A175:#8BC34A A176:#689F38 A177:#33691E A178:#F9FBE7 A179:#DCE775 A180:#CDDC39 A181:#AFB42B A182:#827717 A183:#FFFDE7 A184:#FFF176 A185:#FFEE58 A186:#FDD835
+        A187:#F9A825 A188:#F57F17 A189:#FFF8E1 A190:#FFD54F A191:#FFCA28 A192:#FFB300 A193:#FF6F00 A194:#FFF3E0 A195:#FFB74D A196:#FB8C00 A197:#E65100 A198:#ECEFF1 A199:#B0BEC5 A200:#78909C A201:#546E7A
+        A202:#37474F A203:#263238 A204:#F5F5F5 A205:#E0E0E0 A206:#BDBDBD A207:#9E9E9E A208:#757575 A209:#616161 A210:#424242 A211:#212121 A212:#000000 A213:#FAFAFA A214:#F5F5DC A215:#DEB887 A216:#D2B48C
+        A217:#C19A6B A218:#A0522D A219:#8B4513 A220:#654321 A221:#FFE4E1 A222:#FFDAB9 A223:#FFDEAD A224:#FFE4B5 A225:#FFD700 A226:#DAA520 A227:#B8860B A228:#CD853F
+      `, "Artkal"),
+
+      hama: parsePalette(`
+        H01:#FFFFFF H02:#FFFDD0 H03:#FFFF00 H04:#FFD700 H05:#FFA500 H06:#FF4500 H07:#FF0000 H08:#CC0000 H09:#990000 H10:#800000
+        H11:#FF69B4 H12:#FF1493 H13:#FF007F H14:#CC0066 H15:#FFB6C1 H16:#FFC0CB H17:#E6E6FA H18:#9966CC H19:#6600CC H20:#330066
+        H21:#4169E1 H22:#0000FF H23:#0000CC H24:#000080 H25:#87CEEB H26:#00BFFF H27:#00CED1 H28:#008B8B H29:#90EE90 H30:#00FF00
+        H31:#228B22 H32:#006400 H33:#9ACD32 H34:#556B2F H35:#FFFFE0 H36:#F5DEB3 H37:#D2B48C H38:#CD853F H39:#A0522D H40:#8B4513
+        H41:#654321 H42:#3B2F2F H43:#F5F5F5 H44:#D3D3D3 H45:#A9A9A9 H46:#808080 H47:#505050 H48:#333333 H49:#1A1A1A H50:#000000
+        H51:#FFE4C4 H52:#FFDAB9 H53:#DEB887 H54:#E0C8A8 H55:#C4A882 H56:#B8860B H57:#FFF0DB H58:#FFE0B2 H59:#F5CBA7 H60:#D4A76A
+        H61:#C0C0C0 H62:#B8B8B8 H63:#A0A0A0 H64:#888888 H65:#FFD1DC H66:#C8A2C8 H67:#98FB98 H68:#ADD8E6
+      `, "Hama")
     };
 
     const $ = (id) => document.getElementById(id);
@@ -1849,13 +1880,18 @@
       progressFill.style.width = "0%";
     }
 
-    function buildPattern() {
+    let hasGeneratedOnce = false;
+
+    function buildPattern(isAutoRebuild) {
       if (!sourceImage) return;
-      if (!spendCredits(1)) {
-        showToast("积分不足，请先兑换 CDK");
-        $("cdkModal").classList.add("open");
-        $("cdkInput").focus();
-        return;
+      if (!hasGeneratedOnce) {
+        if (!spendCredits(1)) {
+          showToast("积分不足，请先兑换 CDK");
+          $("cdkModal").classList.add("open");
+          $("cdkInput").focus();
+          return;
+        }
+        hasGeneratedOnce = true;
       }
 
       const t0 = performance.now();
@@ -2284,6 +2320,52 @@
       return new Blob([...local, ...central, new Uint8Array(e)], { type: "application/zip" });
     }
 
+    function buildSpliceGuide(cols, rows, pageBeads, totalW, totalH) {
+      const cellW = 100, cellH = 80, pad = 40, headerH = 60;
+      const w = cols * cellW + pad * 2;
+      const h = rows * cellH + pad * 2 + headerH;
+      const gc = document.createElement("canvas");
+      gc.width = w; gc.height = h;
+      const gx = gc.getContext("2d");
+      gx.fillStyle = "#fff"; gx.fillRect(0, 0, w, h);
+
+      gx.fillStyle = "#0f172a"; gx.font = "bold 20px Arial, sans-serif";
+      gx.textAlign = "left"; gx.textBaseline = "alphabetic";
+      gx.fillText("拼接指引图", pad, pad + 20);
+      gx.fillStyle = "#64748b"; gx.font = "13px Arial, sans-serif";
+      gx.fillText(`${totalW}×${totalH} 豆 · ${cols}×${rows} 板 · 每板 ${pageBeads}×${pageBeads}`, pad, pad + 42);
+
+      const ox = pad, oy = pad + headerH;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = ox + c * cellW, y = oy + r * cellH;
+          const num = r * cols + c + 1;
+          gx.fillStyle = "#f1f5f9"; gx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+          gx.strokeStyle = "#cbd5e1"; gx.lineWidth = 1; gx.strokeRect(x + .5, y + .5, cellW - 1, cellH - 1);
+          gx.fillStyle = "#0f172a"; gx.font = "bold 18px Arial, sans-serif";
+          gx.textAlign = "center"; gx.textBaseline = "middle";
+          gx.fillText(String(num), x + cellW / 2, y + cellH / 2 - 6);
+          const startX = c * pageBeads + 1, startY = r * pageBeads + 1;
+          const endX = Math.min((c + 1) * pageBeads, totalW);
+          const endY = Math.min((r + 1) * pageBeads, totalH);
+          gx.fillStyle = "#94a3b8"; gx.font = "10px Arial, sans-serif";
+          gx.fillText(`列${startX}-${endX} 行${startY}-${endY}`, x + cellW / 2, y + cellH / 2 + 12);
+
+          if (c < cols - 1) {
+            gx.fillStyle = "#6366f1";
+            const ax = x + cellW - 1, ay = y + cellH / 2;
+            gx.beginPath(); gx.moveTo(ax - 4, ay - 4); gx.lineTo(ax + 4, ay); gx.lineTo(ax - 4, ay + 4); gx.fill();
+          }
+          if (r < rows - 1) {
+            gx.fillStyle = "#6366f1";
+            const ax = x + cellW / 2, ay = y + cellH - 1;
+            gx.beginPath(); gx.moveTo(ax - 4, ay - 4); gx.lineTo(ax, ay + 4); gx.lineTo(ax + 4, ay - 4); gx.fill();
+          }
+        }
+      }
+      return gc;
+    }
+
     async function exportPagedPngZip() {
       if (!pattern.length) return;
       if (!spendCredits(2)) { showToast("积分不足（需要 2 积分）"); return; }
@@ -2301,13 +2383,17 @@
           files.push({ name: `pindou-page-${String(num).padStart(3, "0")}.png`, data: new Uint8Array(await blob.arrayBuffer()) });
         }
       }
+      const guideCanvas = buildSpliceGuide(cols, rows, pageBeads, beadWidth, beadHeight);
+      const guideBlob = await canvasToBlob(guideCanvas);
+      files.push({ name: "00-splice-guide.png", data: new Uint8Array(await guideBlob.arrayBuffer()) });
+
       const zip = buildZip(files);
       const url = URL.createObjectURL(zip);
       const a = document.createElement("a"); a.href = url; a.download = "pindou-pattern-pages-png.zip"; a.click();
       URL.revokeObjectURL(url);
       pagedPngButton.disabled = false;
       statusText.textContent = "分页 PNG 已导出";
-      showToast("分页 PNG 已导出");
+      showToast("分页 PNG 已导出（含拼接指引图）");
     }
 
     function exportMaterialsPng() {
@@ -2429,7 +2515,7 @@
     file.addEventListener("change", () => { if (file.files && file.files[0]) loadImageFile(file.files[0]); });
 
     thumbRemove.addEventListener("click", () => {
-      sourceImage = null; sourceFileName = ""; pattern = []; counts = new Map(); file.value = "";
+      sourceImage = null; sourceFileName = ""; pattern = []; counts = new Map(); file.value = ""; hasGeneratedOnce = false;
       thumbWrap.classList.remove("visible"); dropZone.style.display = "";
       empty.hidden = false; canvasInner.hidden = true; zoomControls.style.display = "none"; legendSearchWrap.style.display = "none"; floatFit.hidden = true;
       statusText.textContent = "等待导入图片"; finalSize.textContent = "-"; totalBeads.textContent = "-"; colorCount.textContent = "-";
@@ -2480,24 +2566,28 @@
       buildPattern();
     });
 
-    const debouncedBuild = debounce(buildPattern, 180);
+    const autoPreviewInput = $("autoPreview");
+    const debouncedBuild = debounce(() => { if (hasGeneratedOnce && autoPreviewInput.checked) buildPattern(true); }, 250);
+    const autoBuild = () => { if (hasGeneratedOnce && autoPreviewInput.checked) buildPattern(true); };
 
-    $("generate").addEventListener("click", buildPattern);
-    paletteInput.addEventListener("change", buildPattern);
-    maxColorsInput.addEventListener("change", buildPattern);
-    artisanModeInput.addEventListener("change", buildPattern);
-    colorSafeInput.addEventListener("change", buildPattern);
-    artisanStrengthInput.addEventListener("change", buildPattern);
-    ditherInput.addEventListener("change", buildPattern);
-    crispInput.addEventListener("change", buildPattern);
-    cleanupInput.addEventListener("change", buildPattern);
-    mirrorInput.addEventListener("change", buildPattern);
+    $("generate").addEventListener("click", () => buildPattern(false));
+    paletteInput.addEventListener("change", autoBuild);
+    maxColorsInput.addEventListener("change", autoBuild);
+    artisanModeInput.addEventListener("change", autoBuild);
+    colorSafeInput.addEventListener("change", autoBuild);
+    artisanStrengthInput.addEventListener("change", autoBuild);
+    ditherInput.addEventListener("change", autoBuild);
+    crispInput.addEventListener("change", autoBuild);
+    cleanupInput.addEventListener("change", autoBuild);
+    mirrorInput.addEventListener("change", autoBuild);
     sharpenInput.addEventListener("input", debouncedBuild);
     vibranceInput.addEventListener("input", debouncedBuild);
     contrastInput.addEventListener("input", debouncedBuild);
     cropZoomInput.addEventListener("input", debouncedBuild);
     focusXInput.addEventListener("input", debouncedBuild);
     focusYInput.addEventListener("input", debouncedBuild);
+    widthInput.addEventListener("input", debouncedBuild);
+    heightInput.addEventListener("input", debouncedBuild);
     symbolsInput.addEventListener("change", renderPattern);
     gridInput.addEventListener("change", renderPattern);
     cellInput.addEventListener("input", renderPattern);
