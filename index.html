@@ -750,6 +750,33 @@
     }
     .empty[hidden] { display: none !important; }
 
+    .bead-tip {
+      position: absolute;
+      z-index: 20;
+      background: rgba(15,23,42,.92);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.4;
+      transform: translate(-50%, -110%);
+    }
+    .bead-tip[hidden] { display: none !important; }
+    .bead-tip .tip-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(255,255,255,.3);
+      flex-shrink: 0;
+    }
+
     .float-fit {
       position: absolute;
       top: 8px;
@@ -1186,6 +1213,7 @@
             </div>
           </div>
           <div class="canvas-box" id="canvasBox">
+            <div id="beadTip" class="bead-tip" hidden></div>
             <button type="button" id="floatFit" class="float-fit" hidden>适应屏幕</button>
             <div id="empty" class="empty">
               <div>
@@ -2055,6 +2083,42 @@
         applyZoom();
       }
     }, { passive: false });
+
+    const beadTip = $("beadTip");
+    const labelSpace = 30;
+
+    function getBeadAt(clientX, clientY) {
+      if (!pattern.length) return null;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const cx = (clientX - rect.left) * scaleX;
+      const cy = (clientY - rect.top) * scaleY;
+      const cell = parseInt(cellInput.value, 10);
+      const bx = Math.floor((cx - labelSpace) / cell);
+      const by = Math.floor((cy - labelSpace) / cell);
+      if (bx < 0 || by < 0 || by >= pattern.length || bx >= pattern[0].length) return null;
+      return { x: bx, y: by, color: pattern[by][bx] };
+    }
+
+    function showBeadTip(clientX, clientY) {
+      const bead = getBeadAt(clientX, clientY);
+      if (!bead) { beadTip.hidden = true; return; }
+      const boxRect = canvasBox.getBoundingClientRect();
+      const tipX = clientX - boxRect.left + canvasBox.scrollLeft;
+      const tipY = clientY - boxRect.top + canvasBox.scrollTop;
+      beadTip.innerHTML = `<span class="tip-swatch" style="background:rgb(${bead.color[2].join(",")})"></span>${bead.color[0]} · ${bead.color[1]}<span style="opacity:.5;font-weight:400;margin-left:2px">(${bead.x+1},${bead.y+1})</span>`;
+      beadTip.style.left = tipX + "px";
+      beadTip.style.top = tipY + "px";
+      beadTip.hidden = false;
+    }
+
+    canvas.addEventListener("mousemove", (e) => showBeadTip(e.clientX, e.clientY));
+    canvas.addEventListener("mouseleave", () => { beadTip.hidden = true; });
+    canvas.addEventListener("click", (e) => {
+      if (!("ontouchstart" in window)) return;
+      showBeadTip(e.clientX, e.clientY);
+    });
 
     function renderSummary() {
       if (!pattern.length) return;
