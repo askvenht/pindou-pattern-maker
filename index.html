@@ -8,24 +8,24 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
-      --ink: #0f1419;
-      --ink-2: #1d2939;
-      --muted: #8896a7;
-      --line: rgba(255,255,255,.08);
+      --ink: #0f172a;
+      --ink-2: #1e293b;
+      --muted: #94a3b8;
+      --line: rgba(255,255,255,.06);
       --line-light: #e2e8f0;
       --panel: #ffffff;
-      --bg: #f0f4f8;
-      --accent: #f56040;
-      --accent-glow: rgba(245, 96, 64, .25);
-      --accent-2: #10b981;
-      --accent-2-glow: rgba(16, 185, 129, .2);
-      --sidebar: #111827;
-      --sidebar-surface: rgba(255,255,255,.06);
+      --bg: #f8fafc;
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,.2);
+      --accent-2: #06b6d4;
+      --accent-2-glow: rgba(6,182,212,.15);
+      --sidebar: #0f172a;
+      --sidebar-surface: rgba(255,255,255,.05);
       --sidebar-text: #e2e8f0;
-      --sidebar-muted: #6b7b8d;
+      --sidebar-muted: #64748b;
       --radius: 10px;
-      --shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-      --shadow-lg: 0 20px 60px rgba(0,0,0,.12);
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,.1);
     }
 
     * { box-sizing: border-box; margin: 0; }
@@ -39,59 +39,85 @@
 
     .app {
       display: grid;
-      grid-template-columns: 352px minmax(0, 1fr);
+      grid-template-columns: 340px minmax(0, 1fr);
       min-height: 100vh;
     }
 
-    /* ===== Dark Sidebar ===== */
     aside {
       background: var(--sidebar);
       color: var(--sidebar-text);
-      padding: 24px 20px;
+      padding: 20px 18px;
       overflow-y: auto;
       overflow-x: hidden;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,.12) transparent;
+      scrollbar-color: rgba(255,255,255,.1) transparent;
     }
 
-    aside::-webkit-scrollbar { width: 5px; }
-    aside::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 4px; }
+    aside::-webkit-scrollbar { width: 4px; }
+    aside::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
 
-    main { padding: 24px; overflow: auto; }
+    main { padding: 20px; overflow: auto; }
 
     h1 {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -.3px;
-      margin-bottom: 4px;
-      background: linear-gradient(135deg, #fff, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.2px;
+      margin-bottom: 2px;
+      color: #fff;
     }
 
     .sub {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       color: var(--sidebar-muted);
-      font-size: 12.5px;
-      line-height: 1.6;
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     .group {
-      padding: 14px 0;
+      padding: 12px 0;
       border-top: 1px solid var(--line);
     }
 
     .group:first-of-type { border-top: 0; padding-top: 0; }
 
+    .group-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      padding: 4px 0;
+      margin-bottom: 10px;
+    }
+
+    .group-title span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--sidebar-muted);
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .group-title::after {
+      content: "▾";
+      font-size: 10px;
+      color: var(--sidebar-muted);
+      transition: transform .2s;
+    }
+
+    .group.collapsed .group-title::after { transform: rotate(-90deg); }
+    .group.collapsed .group-body { display: none; }
+
     label {
       display: block;
       font-size: 11px;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .5px;
       color: var(--sidebar-muted);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
+      margin-top: 8px;
     }
+
+    label:first-child { margin-top: 0; }
 
     input[type="file"] { display: none; }
 
@@ -99,15 +125,15 @@
     input[type="text"],
     select {
       width: 100%;
-      min-height: 38px;
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 8px;
+      min-height: 34px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 7px;
       background: var(--sidebar-surface);
       color: var(--sidebar-text);
-      padding: 7px 10px;
+      padding: 6px 10px;
       font: inherit;
       font-size: 13px;
-      transition: border-color .2s, box-shadow .2s;
+      transition: border-color .15s;
     }
 
     input[type="number"]:focus,
@@ -115,7 +141,6 @@
     select:focus {
       outline: none;
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
     select { cursor: pointer; }
@@ -162,9 +187,9 @@
     .check {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-      font-size: 12.5px;
+      gap: 7px;
+      margin-top: 6px;
+      font-size: 12px;
       color: var(--sidebar-muted);
       cursor: pointer;
       transition: color .15s;
@@ -218,27 +243,25 @@
     }
 
     button {
-      min-height: 38px;
+      min-height: 34px;
       border: 0;
-      border-radius: 8px;
-      padding: 8px 12px;
+      border-radius: 7px;
+      padding: 7px 12px;
       font: inherit;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
       color: #fff;
       background: var(--accent);
-      transition: transform .1s, filter .15s, box-shadow .2s;
+      transition: opacity .15s;
     }
 
-    button:hover:not(:disabled) { filter: brightness(1.1); box-shadow: 0 4px 16px var(--accent-glow); }
-    button:active:not(:disabled) { transform: scale(.97); }
+    button:hover:not(:disabled) { opacity: .88; }
+    button:active:not(:disabled) { opacity: .75; }
 
     button.secondary {
       background: var(--accent-2);
     }
-
-    button.secondary:hover:not(:disabled) { box-shadow: 0 4px 16px var(--accent-2-glow); }
 
     button.ghost {
       color: var(--sidebar-text);
@@ -246,74 +269,72 @@
       border: 1px solid rgba(255,255,255,.08);
     }
 
-    button.ghost:hover:not(:disabled) { background: rgba(255,255,255,.1); box-shadow: none; filter: none; }
+    button.ghost:hover:not(:disabled) { background: rgba(255,255,255,.1); opacity: 1; }
 
     .preset {
-      min-height: 32px;
-      padding: 6px 4px;
+      min-height: 30px;
+      padding: 5px 4px;
       color: var(--sidebar-muted);
       background: var(--sidebar-surface);
       border: 1px solid rgba(255,255,255,.06);
-      font-size: 11.5px;
+      font-size: 11px;
       font-weight: 600;
       transition: all .15s;
     }
 
-    .preset:hover { color: var(--sidebar-text); background: rgba(255,255,255,.1); box-shadow: none; filter: none; }
+    .preset:hover { color: var(--sidebar-text); background: rgba(255,255,255,.1); opacity: 1; }
 
     .preset.active {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
-      box-shadow: 0 2px 12px var(--accent-glow);
     }
 
-    .full { width: 100%; margin-top: 8px; }
+    .full { width: 100%; margin-top: 6px; }
 
     .buttons .wide { grid-column: 1 / -1; }
 
-    button:disabled { opacity: .35; cursor: not-allowed; }
+    button:disabled { opacity: .3; cursor: not-allowed; }
 
-    /* ===== Credits Bar ===== */
     .credits-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 12px 14px;
-      margin-bottom: 18px;
-      background: linear-gradient(135deg, rgba(245,96,64,.12), rgba(251,191,36,.1));
-      border: 1px solid rgba(245,96,64,.2);
-      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      background: var(--sidebar-surface);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 8px;
     }
 
     .credits-bar-left {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-weight: 700;
+      gap: 6px;
+      font-weight: 600;
     }
 
-    .credits-bar-left .coin { font-size: 22px; }
+    .credits-bar-left .coin { font-size: 18px; }
 
     .credits-num {
-      font-size: 22px;
-      font-weight: 800;
-      color: #fbbf24;
+      font-size: 18px;
+      font-weight: 700;
+      color: #a5b4fc;
       font-variant-numeric: tabular-nums;
     }
 
     .credits-label {
       color: var(--sidebar-muted);
       font-weight: 500;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .credits-bar button {
-      min-height: 32px;
-      padding: 6px 16px;
-      font-size: 12px;
-      border-radius: 20px;
+      min-height: 28px;
+      padding: 4px 14px;
+      font-size: 11px;
+      border-radius: 6px;
       background: var(--accent);
     }
 
@@ -511,33 +532,31 @@
 
     .admin-stats { font-size: 12px; color: #64748b; font-weight: 500; }
 
-    /* ===== Drop Zone ===== */
     .drop-zone {
-      border: 2px dashed rgba(255,255,255,.15);
-      border-radius: var(--radius);
-      padding: 28px 16px;
+      border: 1.5px dashed rgba(255,255,255,.12);
+      border-radius: 8px;
+      padding: 20px 14px;
       text-align: center;
       cursor: pointer;
-      transition: all .25s;
+      transition: all .2s;
       background: var(--sidebar-surface);
       position: relative;
     }
 
     .drop-zone:hover, .drop-zone.drag-over {
       border-color: var(--accent);
-      background: rgba(245,96,64,.08);
-      box-shadow: inset 0 0 20px rgba(245,96,64,.05);
+      background: rgba(99,102,241,.06);
     }
 
     .drop-zone-icon {
-      font-size: 36px;
+      font-size: 28px;
       line-height: 1;
-      margin-bottom: 10px;
-      opacity: .4;
+      margin-bottom: 6px;
+      opacity: .35;
     }
 
     .drop-zone-text {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--sidebar-muted);
       line-height: 1.5;
     }
@@ -606,26 +625,25 @@
     .slider-row input[type="range"] { flex: 1; }
 
     .slider-val {
-      min-width: 36px;
+      min-width: 34px;
       text-align: right;
-      font-size: 12px;
-      font-weight: 700;
-      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 600;
+      color: #a5b4fc;
       font-variant-numeric: tabular-nums;
     }
 
-    /* ===== Main Content Area ===== */
     .stage {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 310px;
-      gap: 20px;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 16px;
       align-items: start;
     }
 
     .board-wrap {
       background: var(--panel);
       border: 1px solid var(--line-light);
-      border-radius: 12px;
+      border-radius: 10px;
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -633,24 +651,24 @@
     .summary {
       background: var(--panel);
       border: 1px solid var(--line-light);
-      border-radius: 12px;
+      border-radius: 10px;
       box-shadow: var(--shadow);
-      padding: 18px;
+      padding: 16px;
       position: sticky;
-      top: 24px;
+      top: 20px;
     }
 
     .toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
+      gap: 8px;
+      padding: 8px 14px;
       border-bottom: 1px solid var(--line-light);
       color: #64748b;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
-      background: #f8fafc;
+      background: #fafbfc;
     }
 
     .toolbar-right {
@@ -724,37 +742,34 @@
 
     .empty {
       display: grid;
-      min-height: 520px;
+      min-height: 400px;
       place-items: center;
       color: #94a3b8;
       text-align: center;
-      border: 2px dashed #e2e8f0;
-      border-radius: var(--radius);
-      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-      font-size: 14px;
+      font-size: 13px;
     }
     .empty[hidden] { display: none !important; }
 
     .float-fit {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       z-index: 10;
       background: var(--accent);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 700;
+      border-radius: 7px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,.25);
-      min-height: 40px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.2);
+      min-height: 32px;
     }
-    .float-fit:active { opacity: .8; }
+    .float-fit:active { opacity: .7; }
     .float-fit[hidden] { display: none !important; }
 
-    .empty strong { font-size: 16px; color: #475569; display: block; margin-bottom: 6px; }
+    .empty strong { font-size: 14px; color: #64748b; display: block; margin-bottom: 4px; }
 
     .stat {
       display: flex;
@@ -835,10 +850,10 @@
     .legend-item b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 
     .hint {
-      margin-top: 10px;
-      font-size: 11.5px;
-      line-height: 1.55;
-      color: var(--sidebar-muted);
+      margin-top: 8px;
+      font-size: 10.5px;
+      line-height: 1.5;
+      color: rgba(255,255,255,.2);
     }
 
     .progress-bar {
@@ -862,20 +877,20 @@
 
     .toast {
       position: fixed;
-      bottom: 28px;
+      bottom: 24px;
       left: 50%;
-      transform: translateX(-50%) translateY(80px);
+      transform: translateX(-50%) translateY(60px);
       background: var(--ink);
       color: #fff;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-size: 13px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 12px;
       font-weight: 600;
       z-index: 999;
       opacity: 0;
-      transition: transform .3s cubic-bezier(.4,0,.2,1), opacity .3s;
+      transition: transform .25s cubic-bezier(.4,0,.2,1), opacity .25s;
       pointer-events: none;
-      box-shadow: 0 8px 32px rgba(0,0,0,.25);
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
     }
 
     .toast.show {
@@ -1009,13 +1024,10 @@
       </div>
 
       <div class="group">
-        <label>导入图片</label>
         <div class="drop-zone" id="dropZone">
           <input id="file" type="file" accept="image/*">
           <div class="drop-zone-icon">📎</div>
-          <div class="drop-zone-text">
-            点击选择或<b>拖拽图片</b>到此处
-          </div>
+          <div class="drop-zone-text">点击选择或<b>拖拽图片</b></div>
         </div>
         <div class="thumb-wrap" id="thumbWrap">
           <img id="thumbImg" alt="preview">
@@ -1025,107 +1037,118 @@
             <span id="thumbDim">-</span>
           </div>
         </div>
-        <div class="hint">适合头像、徽章、动漫图标、简单插画。背景越干净，图纸越稳。</div>
       </div>
 
       <div class="group">
-        <div class="row">
-          <div>
-            <label for="width">宽度豆数</label>
-            <input id="width" type="number" min="8" max="600" value="160">
-          </div>
-          <div>
-            <label for="height">高度豆数</label>
-            <input id="height" type="number" min="8" max="600" value="160">
-          </div>
-        </div>
-        <label class="check"><input id="lockRatio" type="checkbox" checked> 保持原图比例</label>
-        <div class="presets">
-          <button class="preset" data-size="48" type="button">48 小图</button>
-          <button class="preset" data-size="96" type="button">96 精细</button>
-          <button class="preset active" data-size="160" type="button">160 丰富</button>
-          <button class="preset" data-size="220" type="button">220 高清</button>
-          <button class="preset" data-size="300" type="button">300 大幅</button>
-          <button class="preset" data-size="480" type="button">480 超细</button>
-        </div>
-        <button id="nativeSize" class="ghost full" type="button">按原图像素生成</button>
-        <div class="hint">细节越多，豆数越大。头像建议 80-120；复杂插画建议 220-480；横幅整图想清楚会非常大。</div>
-      </div>
-
-      <div class="group">
-        <label for="cropZoom">主体放大裁剪</label>
-        <div class="slider-row">
-          <input id="cropZoom" type="range" min="1" max="5" value="1" step="0.05">
-          <span class="slider-val" id="cropZoomVal">1.0x</span>
-        </div>
-        <div class="row">
-          <div>
-            <label for="focusX">左右位置</label>
-            <div class="slider-row">
-              <input id="focusX" type="range" min="0" max="100" value="50">
-              <span class="slider-val" id="focusXVal">50</span>
+        <div class="group-title" data-toggle><span>尺寸</span></div>
+        <div class="group-body">
+          <div class="row">
+            <div>
+              <label for="width">宽度</label>
+              <input id="width" type="number" min="8" max="600" value="160">
+            </div>
+            <div>
+              <label for="height">高度</label>
+              <input id="height" type="number" min="8" max="600" value="160">
             </div>
           </div>
-          <div>
-            <label for="focusY">上下位置</label>
-            <div class="slider-row">
-              <input id="focusY" type="range" min="0" max="100" value="50">
-              <span class="slider-val" id="focusYVal">50</span>
+          <label class="check"><input id="lockRatio" type="checkbox" checked> 保持比例</label>
+          <div class="presets">
+            <button class="preset" data-size="48" type="button">48</button>
+            <button class="preset" data-size="96" type="button">96</button>
+            <button class="preset active" data-size="160" type="button">160</button>
+            <button class="preset" data-size="220" type="button">220</button>
+            <button class="preset" data-size="300" type="button">300</button>
+            <button class="preset" data-size="480" type="button">480</button>
+          </div>
+          <button id="nativeSize" class="ghost full" type="button">按原图像素</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <div class="group-title" data-toggle><span>裁剪</span></div>
+        <div class="group-body">
+          <label for="cropZoom">放大</label>
+          <div class="slider-row">
+            <input id="cropZoom" type="range" min="1" max="5" value="1" step="0.05">
+            <span class="slider-val" id="cropZoomVal">1x</span>
+          </div>
+          <div class="row">
+            <div>
+              <label for="focusX">左右</label>
+              <div class="slider-row">
+                <input id="focusX" type="range" min="0" max="100" value="50">
+                <span class="slider-val" id="focusXVal">50</span>
+              </div>
+            </div>
+            <div>
+              <label for="focusY">上下</label>
+              <div class="slider-row">
+                <input id="focusY" type="range" min="0" max="100" value="50">
+                <span class="slider-val" id="focusYVal">50</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="hint">做人物细节时，不要整张横幅硬压缩。把主体放大到 2-4 倍，再移动位置保留脸、头发、武器等重点。</div>
       </div>
 
       <div class="group">
-        <label for="palette">颜色库</label>
-        <select id="palette">
-          <option value="mard221">MARD 221 标准版</option>
-        </select>
-        <label for="maxColors">最大颜色数</label>
-        <select id="maxColors">
-          <option value="32">32 色，最干净</option>
-          <option value="48">48 色，清晰</option>
-          <option value="64">64 色，干净</option>
-          <option value="96">96 色，推荐保色</option>
-          <option value="128" selected>128 色，淡色插画</option>
-          <option value="221">221 色，全色</option>
-        </select>
-        <label class="check"><input id="artisanMode" type="checkbox" checked> 人工优化模式</label>
-        <label class="check"><input id="colorSafe" type="checkbox" checked> 保留原图色彩</label>
-        <label for="artisanStrength">人工优化强度</label>
-        <select id="artisanStrength">
-          <option value="soft">轻度，保留细节</option>
-          <option value="normal" selected>标准，推荐</option>
-          <option value="strong">强力，最干净</option>
-        </select>
-        <label class="check"><input id="dither" type="checkbox"> 开启抖动，渐变更自然</label>
-        <label class="check"><input id="crisp" type="checkbox"> 像素图硬边模式</label>
-        <label class="check"><input id="cleanup" type="checkbox" checked> 清理孤立噪点</label>
-        <label class="check"><input id="mirror" type="checkbox"> 水平镜像图纸</label>
-        <label class="check"><input id="symbols" type="checkbox" checked> 显示颜色编号</label>
-        <label class="check"><input id="grid" type="checkbox" checked> 显示格线</label>
-        <label for="sharpen">细节锐化</label>
-        <div class="slider-row">
-          <input id="sharpen" type="range" min="0" max="2" value="0.25" step="0.25">
-          <span class="slider-val" id="sharpenVal">0.25</span>
+        <div class="group-title" data-toggle><span>颜色</span></div>
+        <div class="group-body">
+          <label for="palette">颜色库</label>
+          <select id="palette">
+            <option value="mard221">MARD 221</option>
+          </select>
+          <label for="maxColors">最大颜色</label>
+          <select id="maxColors">
+            <option value="32">32 色</option>
+            <option value="48">48 色</option>
+            <option value="64">64 色</option>
+            <option value="96">96 色</option>
+            <option value="128" selected>128 色</option>
+            <option value="221">全部 221 色</option>
+          </select>
+          <label class="check"><input id="artisanMode" type="checkbox" checked> 人工优化</label>
+          <label class="check"><input id="colorSafe" type="checkbox" checked> 保留原色</label>
+          <label for="artisanStrength">优化强度</label>
+          <select id="artisanStrength">
+            <option value="soft">轻度</option>
+            <option value="normal" selected>标准</option>
+            <option value="strong">强力</option>
+          </select>
+          <label class="check"><input id="dither" type="checkbox"> 抖动</label>
+          <label class="check"><input id="crisp" type="checkbox"> 硬边模式</label>
+          <label class="check"><input id="cleanup" type="checkbox" checked> 清理噪点</label>
+          <label for="sharpen">锐化</label>
+          <div class="slider-row">
+            <input id="sharpen" type="range" min="0" max="2" value="0.25" step="0.25">
+            <span class="slider-val" id="sharpenVal">0.25</span>
+          </div>
         </div>
-        <div class="hint">插画默认不建议开抖动，否则会出现满屏彩色碎点。需要像素画原味时再开硬边模式。</div>
       </div>
 
       <div class="group">
-        <label for="cell">图纸格子大小</label>
-        <div class="slider-row">
-          <input id="cell" type="range" min="10" max="34" value="20">
-          <span class="slider-val" id="cellVal">20px</span>
+        <div class="group-title" data-toggle><span>显示</span></div>
+        <div class="group-body">
+          <label class="check"><input id="mirror" type="checkbox"> 水平镜像</label>
+          <label class="check"><input id="symbols" type="checkbox" checked> 颜色编号</label>
+          <label class="check"><input id="grid" type="checkbox" checked> 格线</label>
+          <label for="cell">格子大小</label>
+          <div class="slider-row">
+            <input id="cell" type="range" min="10" max="34" value="20">
+            <span class="slider-val" id="cellVal">20px</span>
+          </div>
+          <label for="pageBeads">分页</label>
+          <select id="pageBeads">
+            <option value="30">30 × 30</option>
+            <option value="40" selected>40 × 40</option>
+            <option value="50">50 × 50</option>
+            <option value="60">60 × 60</option>
+          </select>
         </div>
-        <label for="pageBeads">分页大小</label>
-        <select id="pageBeads">
-          <option value="30">30 x 30，每页最大编号</option>
-          <option value="40" selected>40 x 40，推荐打印</option>
-          <option value="50">50 x 50，均衡</option>
-          <option value="60">60 x 60，页数较少</option>
-        </select>
+      </div>
+
+      <div class="group">
         <div class="progress-bar" id="progress"><div class="progress-bar-fill" id="progressFill"></div></div>
         <div class="buttons">
           <button id="generate">生成图纸 <span class="cdk-cost">🪙1</span></button>
@@ -2395,6 +2418,10 @@
 
     document.addEventListener("keydown", (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); buildPattern(); }
+    });
+
+    document.querySelectorAll("[data-toggle]").forEach(t => {
+      t.addEventListener("click", () => t.closest(".group").classList.toggle("collapsed"));
     });
 
     document.addEventListener("paste", (e) => {
