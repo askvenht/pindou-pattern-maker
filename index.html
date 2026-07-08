@@ -1124,6 +1124,16 @@
             <input id="sharpen" type="range" min="0" max="2" value="0.25" step="0.25">
             <span class="slider-val" id="sharpenVal">0.25</span>
           </div>
+          <label for="vibrance">鲜艳度</label>
+          <div class="slider-row">
+            <input id="vibrance" type="range" min="0" max="1.5" value="0.4" step="0.1">
+            <span class="slider-val" id="vibranceVal">0.4</span>
+          </div>
+          <label for="contrast">对比度</label>
+          <div class="slider-row">
+            <input id="contrast" type="range" min="0" max="80" value="15" step="5">
+            <span class="slider-val" id="contrastVal">15</span>
+          </div>
         </div>
       </div>
 
@@ -1391,6 +1401,8 @@
     const symbolsInput = $("symbols");
     const gridInput = $("grid");
     const sharpenInput = $("sharpen");
+    const vibranceInput = $("vibrance");
+    const contrastInput = $("contrast");
     const cropZoomInput = $("cropZoom");
     const focusXInput = $("focusX");
     const focusYInput = $("focusY");
@@ -1696,6 +1708,30 @@
       return imageData;
     }
 
+    function applyVibranceBoost(imageData, amount) {
+      const d = imageData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i+1], b = d[i+2];
+        const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+        const sat = mx === 0 ? 0 : (mx - mn) / mx;
+        const boost = 1 + amount * (1 - sat);
+        const avg = (r + g + b) / 3;
+        d[i]   = clamp(Math.round(avg + (r - avg) * boost), 0, 255);
+        d[i+1] = clamp(Math.round(avg + (g - avg) * boost), 0, 255);
+        d[i+2] = clamp(Math.round(avg + (b - avg) * boost), 0, 255);
+      }
+    }
+
+    function applyContrastBoost(imageData, amount) {
+      const d = imageData.data;
+      const f = (259 * (amount + 255)) / (255 * (259 - amount));
+      for (let i = 0; i < d.length; i += 4) {
+        d[i]   = clamp(Math.round(f * (d[i] - 128) + 128), 0, 255);
+        d[i+1] = clamp(Math.round(f * (d[i+1] - 128) + 128), 0, 255);
+        d[i+2] = clamp(Math.round(f * (d[i+2] - 128) + 128), 0, 255);
+      }
+    }
+
     function applyArtisanPreprocess(imageData, width, height) {
       if (!artisanModeInput.checked) return imageData;
       const settings = getArtisanSettings();
@@ -1826,6 +1862,10 @@
           beadWidth, beadHeight,
           parseFloat(sharpenInput.value || "0") * 0.28
         );
+        const vib = parseFloat(vibranceInput.value || "0");
+        if (vib > 0) applyVibranceBoost(imageData, vib);
+        const con = parseInt(contrastInput.value || "0", 10);
+        if (con > 0) applyContrastBoost(imageData, con);
         applyArtisanPreprocess(imageData, beadWidth, beadHeight);
         const pixels = [];
         for (let y = 0; y < beadHeight; y++) {
@@ -2341,6 +2381,8 @@
     syncSliderVal(focusXInput, $("focusXVal"));
     syncSliderVal(focusYInput, $("focusYVal"));
     syncSliderVal(sharpenInput, $("sharpenVal"));
+    syncSliderVal(vibranceInput, $("vibranceVal"));
+    syncSliderVal(contrastInput, $("contrastVal"));
     syncSliderVal(cellInput, $("cellVal"), "px");
 
     widthInput.addEventListener("input", () => {
@@ -2387,6 +2429,8 @@
     cleanupInput.addEventListener("change", buildPattern);
     mirrorInput.addEventListener("change", buildPattern);
     sharpenInput.addEventListener("input", debouncedBuild);
+    vibranceInput.addEventListener("input", debouncedBuild);
+    contrastInput.addEventListener("input", debouncedBuild);
     cropZoomInput.addEventListener("input", debouncedBuild);
     focusXInput.addEventListener("input", debouncedBuild);
     focusYInput.addEventListener("input", debouncedBuild);
