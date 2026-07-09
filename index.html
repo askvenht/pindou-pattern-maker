@@ -2332,6 +2332,26 @@
       URL.revokeObjectURL(url);
     }
 
+    // On iOS/iPadOS: uses native share sheet so user can "存储图像" to Photos.
+    // On desktop/Android: falls back to regular <a download>.
+    async function saveImagePng(dataUrl, filename) {
+      if (navigator.share && navigator.canShare) {
+        try {
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], filename, { type: "image/png" });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: filename });
+            return;
+          }
+        } catch (e) {
+          if (e.name === "AbortError") return; // user cancelled share sheet
+        }
+      }
+      const a = document.createElement("a");
+      a.href = dataUrl; a.download = filename; a.click();
+    }
+
     function xmlEscape(value) {
       return String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]);
     }
@@ -2530,7 +2550,7 @@
       showToast("分页 PNG 已导出（含拼接指引图）");
     }
 
-    function exportPixelArtPng() {
+    async function exportPixelArtPng() {
       if (!pattern.length) return;
       const bh = pattern.length, bw = pattern[0].length;
       const scale = Math.max(4, Math.floor(1200 / Math.max(bw, bh)));
@@ -2545,14 +2565,11 @@
           pctx.fillRect(x * scale, y * scale, scale, scale);
         }
       }
-      const a = document.createElement("a");
-      a.href = pc.toDataURL("image/png");
-      a.download = "pixel-art.png";
-      a.click();
+      await saveImagePng(pc.toDataURL("image/png"), "pixel-art.png");
       showToast("像素画 PNG 已导出");
     }
 
-    function exportMaterialsPng() {
+    async function exportMaterialsPng() {
       if (!pattern.length) return;
       const palette = palettes[paletteInput.value];
       const used = palette.filter((c) => counts.has(c[0])).sort((a, b) => counts.get(b[0]) - counts.get(a[0]));
@@ -2580,7 +2597,7 @@
         mx.fillStyle = "#1c2430"; mx.font = "bold 14px Arial, sans-serif";
         mx.textAlign = "right"; mx.fillText(String(counts.get(c[0])), x + colW - 10, y); mx.textAlign = "left";
       }
-      const a = document.createElement("a"); a.href = mc.toDataURL("image/png"); a.download = "pindou-materials.png"; a.click();
+      await saveImagePng(mc.toDataURL("image/png"), "pindou-materials.png");
       showToast("颜色清单已导出");
     }
 
@@ -2750,9 +2767,9 @@
     cellInput.addEventListener("input", renderPattern);
     $("print").addEventListener("click", () => window.print());
 
-    pngButton.addEventListener("click", () => {
+    pngButton.addEventListener("click", async () => {
       if (!spendCredits(1)) { showToast("积分不足（需要 1 积分）"); return; }
-      const a = document.createElement("a"); a.href = canvas.toDataURL("image/png"); a.download = "pindou-pattern.png"; a.click();
+      await saveImagePng(canvas.toDataURL("image/png"), "pindou-pattern.png");
       showToast("PNG 已导出");
     });
 
