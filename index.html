@@ -941,6 +941,51 @@
       .summary { position: static; }
     }
 
+    /* Mobile bottom action bar + export sheet (hidden on desktop) */
+    .mobile-bar { display: none; }
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(15,23,42,.5);
+      display: none;
+    }
+    .sheet-overlay.open { display: block; }
+    .sheet {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
+      box-shadow: 0 -12px 40px rgba(0,0,0,.2);
+      display: grid;
+      gap: 10px;
+    }
+    .sheet-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .sheet button {
+      min-height: 50px;
+      border: 1px solid var(--line-light);
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .sheet button:disabled { opacity: .4; }
+    .sheet .sheet-cancel {
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
     /* Mobile + Tablet shared */
     @media (max-width: 980px) {
       .app { grid-template-columns: 1fr; }
@@ -950,7 +995,34 @@
         padding: 20px 16px;
         max-height: none;
       }
-      main { padding: 16px; }
+      main { padding: 16px; padding-bottom: 90px; }
+      aside { padding-bottom: 24px; }
+      .mobile-bar {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr;
+        gap: 8px;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 60;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        background: rgba(15,23,42,.94);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-top: 1px solid rgba(255,255,255,.1);
+      }
+      .mobile-bar button {
+        min-height: 48px;
+        border: 0;
+        border-radius: 11px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .mobile-bar .m-generate { background: var(--accent); color: #fff; }
+      .mobile-bar .m-secondary { background: rgba(255,255,255,.1); color: #e2e8f0; }
+      .mobile-bar button:disabled { opacity: .35; }
+      /* the sidebar export buttons are redundant on mobile — the bar covers them */
+      .buttons #png, .buttons #pixelArt, .buttons #pagedPng, .buttons #materials { display: none; }
       h1 { font-size: 20px; }
       .credits-bar { padding: 10px 12px; }
       .credits-num { font-size: 18px; }
@@ -1035,7 +1107,7 @@
 
     @media print {
       body { background: #fff; }
-      aside, .toolbar, .buttons, .hint, .toast, .legend-search, .credits-bar { display: none !important; }
+      aside, .toolbar, .buttons, .hint, .toast, .legend-search, .credits-bar, .mobile-bar, .sheet-overlay { display: none !important; }
       .app, .stage { display: block; }
       main { padding: 0; }
       .board-wrap, .summary { box-shadow: none; border: 0; }
@@ -1254,6 +1326,25 @@
         </section>
       </div>
     </main>
+  </div>
+
+  <!-- Mobile bottom action bar -->
+  <div class="mobile-bar" id="mobileBar">
+    <button type="button" id="mGenerate" class="m-generate">生成图纸 <span class="cdk-cost">🪙1</span></button>
+    <button type="button" id="mView" class="m-secondary" disabled>看图纸</button>
+    <button type="button" id="mExport" class="m-secondary" disabled>导出</button>
+  </div>
+
+  <!-- Mobile export sheet -->
+  <div class="sheet-overlay" id="exportSheet">
+    <div class="sheet">
+      <div class="sheet-title">导出</div>
+      <button type="button" id="sPng">导出图纸 PNG <span class="cdk-cost">🪙1</span></button>
+      <button type="button" id="sPixelArt">导出像素画 PNG</button>
+      <button type="button" id="sPagedPng">导出分页 PNG <span class="cdk-cost">🪙2</span></button>
+      <button type="button" id="sMaterials">导出颜色清单</button>
+      <button type="button" id="sheetClose" class="sheet-cancel">取消</button>
+    </div>
   </div>
 
   <!-- CDK Redeem Modal -->
@@ -2103,8 +2194,14 @@
         floatFit.hidden = false;
         pixelPreviewToggle.style.display = "";
         legendSearchWrap.style.display = "block";
+        $("mView").disabled = false;
+        $("mExport").disabled = false;
 
-        if (window.innerWidth <= 980) requestAnimationFrame(() => zoomToFit());
+        if (window.innerWidth <= 980) {
+          requestAnimationFrame(() => zoomToFit());
+          // manual generate: bring the pattern into view so the user doesn't have to scroll
+          if (!isAutoRebuild) canvasBox.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
 
         const elapsed = Math.round(performance.now() - t0);
         statusText.textContent = `图纸已生成 (${elapsed}ms)`;
@@ -2695,6 +2792,7 @@
       statusText.textContent = "等待导入图片"; finalSize.textContent = "-"; totalBeads.textContent = "-"; colorCount.textContent = "-";
       legend.innerHTML = "";
       pngButton.disabled = true; pixelArtButton.disabled = true; svgButton.disabled = true; pagedSvgButton.disabled = true; pagedPngButton.disabled = true; materialsButton.disabled = true;
+      $("mView").disabled = true; $("mExport").disabled = true;
     });
 
     function syncSliderVal(slider, display, suffix = "") {
@@ -2782,6 +2880,29 @@
       renderPattern();
       requestAnimationFrame(() => zoomToFit());
     });
+
+    // Mobile bottom bar
+    const mViewButton = $("mView");
+    const mExportButton = $("mExport");
+    const exportSheet = $("exportSheet");
+
+    function scrollToCanvas() {
+      canvasBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    $("mGenerate").addEventListener("click", () => {
+      buildPattern(false);
+    });
+    mViewButton.addEventListener("click", scrollToCanvas);
+    mExportButton.addEventListener("click", () => exportSheet.classList.add("open"));
+    $("sheetClose").addEventListener("click", () => exportSheet.classList.remove("open"));
+    exportSheet.addEventListener("click", (e) => {
+      if (e.target === exportSheet) exportSheet.classList.remove("open");
+    });
+    $("sPng").addEventListener("click", () => { exportSheet.classList.remove("open"); pngButton.click(); });
+    $("sPixelArt").addEventListener("click", () => { exportSheet.classList.remove("open"); exportPixelArtPng(); });
+    $("sPagedPng").addEventListener("click", () => { exportSheet.classList.remove("open"); exportPagedPngZip(); });
+    $("sMaterials").addEventListener("click", () => { exportSheet.classList.remove("open"); exportMaterialsPng(); });
 
     svgButton.addEventListener("click", () => {
       if (!spendCredits(1)) { showToast("积分不足（需要 1 积分）"); return; }
