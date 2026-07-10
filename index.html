@@ -5,33 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>拼豆图纸生成器</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Cabin:wght@400;500;600;700&display=swap');
 
     :root {
-      --ink: #0f172a;
-      --ink-2: #1e293b;
-      --muted: #94a3b8;
-      --line: rgba(255,255,255,.06);
-      --line-light: #e2e8f0;
-      --panel: #ffffff;
-      --bg: #f8fafc;
-      --accent: #6366f1;
-      --accent-glow: rgba(99,102,241,.2);
-      --accent-2: #06b6d4;
-      --accent-2-glow: rgba(6,182,212,.15);
-      --sidebar: #0f172a;
+      --ink: #FAFAF9;
+      --ink-2: #E7E5E4;
+      --muted: #A8A29E;
+      --line: rgba(255,255,255,.07);
+      --line-light: rgba(255,255,255,.09);
+      --panel: #292524;
+      --bg: #1C1917;
+      --accent: #EA580C;
+      --accent-glow: rgba(234,88,12,.25);
+      --accent-2: #C2410C;
+      --accent-2-glow: rgba(194,65,12,.2);
+      --sidebar: #221E1B;
       --sidebar-surface: rgba(255,255,255,.05);
-      --sidebar-text: #e2e8f0;
-      --sidebar-muted: #64748b;
+      --sidebar-text: #E7E5E4;
+      --sidebar-muted: #A8A29E;
       --radius: 10px;
-      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-      --shadow-lg: 0 20px 60px rgba(0,0,0,.1);
+      --shadow: 0 1px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.2);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,.45);
     }
 
     * { box-sizing: border-box; margin: 0; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-family: 'Cabin', -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
       min-height: 100vh;
       color: var(--ink);
       background: var(--bg);
@@ -253,11 +253,32 @@
       cursor: pointer;
       color: #fff;
       background: var(--accent);
-      transition: opacity .15s;
+      transition: opacity .15s, transform .12s;
     }
 
     button:hover:not(:disabled) { opacity: .88; }
-    button:active:not(:disabled) { opacity: .75; }
+    button:active:not(:disabled) { opacity: .8; transform: scale(.97); }
+
+    :is(button, input, select, .check, .legend-item):focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .brand-latin {
+      font-family: 'Amatic SC', cursive;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-left: 6px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
 
     button.secondary {
       background: var(--accent-2);
@@ -320,7 +341,7 @@
     .credits-num {
       font-size: 18px;
       font-weight: 700;
-      color: #a5b4fc;
+      color: #FDBA74;
       font-variant-numeric: tabular-nums;
     }
 
@@ -352,7 +373,7 @@
     .modal-overlay.open { display: grid; }
 
     .modal {
-      background: #fff;
+      background: var(--panel);
       border-radius: 16px;
       padding: 32px;
       max-width: 420px;
@@ -369,7 +390,7 @@
 
     .modal p {
       margin-bottom: 18px;
-      color: #64748b;
+      color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
     }
@@ -381,7 +402,7 @@
       text-transform: uppercase;
       font-weight: 700;
       border: 2px solid var(--line-light);
-      background: #f8fafc;
+      background: rgba(255,255,255,.05);
       color: var(--ink);
       border-radius: var(--radius);
       min-height: 48px;
@@ -408,7 +429,7 @@
 
     .modal .btn-row .ghost {
       color: var(--ink);
-      background: #f1f5f9;
+      background: rgba(255,255,255,.08);
       border: 1px solid var(--line-light);
     }
 
@@ -420,8 +441,8 @@
       font-weight: 600;
     }
 
-    .modal .msg.ok { color: var(--accent-2); }
-    .modal .msg.err { color: var(--accent); }
+    .modal .msg.ok { color: #4ADE80; }
+    .modal .msg.err { color: #F87171; }
 
     .cdk-cost {
       display: inline-flex;
@@ -447,7 +468,7 @@
     .admin-overlay.open { display: grid; }
 
     .admin-panel {
-      background: #fff;
+      background: var(--panel);
       border-radius: 16px;
       padding: 32px;
       max-width: 600px;
@@ -466,7 +487,7 @@
 
     .admin-panel .admin-sub {
       margin-bottom: 20px;
-      color: #64748b;
+      color: var(--muted);
       font-size: 13px;
     }
 
@@ -481,7 +502,7 @@
 
     .admin-row label {
       font-size: 11px;
-      color: #64748b;
+      color: var(--muted);
       margin-bottom: 4px;
     }
 
@@ -489,7 +510,7 @@
       min-height: 40px;
       font-size: 14px;
       border: 2px solid var(--line-light);
-      background: #f8fafc;
+      background: rgba(255,255,255,.05);
       color: var(--ink);
     }
 
@@ -501,8 +522,8 @@
     }
 
     .cdk-output {
-      background: #0f172a;
-      border: 1px solid #1e293b;
+      background: #171412;
+      border: 1px solid rgba(255,255,255,.09);
       border-radius: var(--radius);
       padding: 16px;
       max-height: 300px;
@@ -513,12 +534,12 @@
       user-select: all;
       white-space: pre-wrap;
       word-break: break-all;
-      color: #22d3ee;
+      color: #FDBA74;
     }
 
     .cdk-output:empty::after {
       content: "生成的 CDK 将显示在这里";
-      color: #475569;
+      color: var(--muted);
     }
 
     .admin-footer {
@@ -530,7 +551,7 @@
 
     .admin-footer button { min-height: 36px; font-size: 13px; padding: 6px 18px; }
 
-    .admin-stats { font-size: 12px; color: #64748b; font-weight: 500; }
+    .admin-stats { font-size: 12px; color: var(--muted); font-weight: 500; }
 
     .drop-zone {
       border: 1.5px dashed rgba(255,255,255,.12);
@@ -629,7 +650,7 @@
       text-align: right;
       font-size: 11px;
       font-weight: 600;
-      color: #a5b4fc;
+      color: #FDBA74;
       font-variant-numeric: tabular-nums;
     }
 
@@ -665,10 +686,10 @@
       gap: 8px;
       padding: 8px 14px;
       border-bottom: 1px solid var(--line-light);
-      color: #64748b;
+      color: var(--muted);
       font-size: 12px;
       font-weight: 500;
-      background: #fafbfc;
+      background: var(--sidebar);
     }
 
     .toolbar-right {
@@ -687,12 +708,12 @@
       min-height: 28px;
       padding: 4px 8px;
       font-size: 13px;
-      background: #e2e8f0;
+      background: rgba(255,255,255,.14);
       color: var(--ink-2);
       border-radius: 6px;
     }
 
-    .zoom-controls button:hover { background: #cbd5e1; filter: none; box-shadow: none; }
+    .zoom-controls button:hover { background: rgba(255,255,255,.22); filter: none; box-shadow: none; }
 
     .fit-btn {
       font-size: 11px;
@@ -704,7 +725,7 @@
       padding: 4px 8px;
     }
     .pixel-toggle.active {
-      background: #7c3aed !important;
+      background: var(--accent) !important;
       color: #fff !important;
       opacity: 1;
     }
@@ -743,18 +764,19 @@
       position: relative;
       cursor: grab;
       max-height: 75vh;
-      background: #fff;
+      background: var(--bg);
     }
 
     .canvas-box:active { cursor: grabbing; }
 
     .canvas-inner { display: inline-block; position: relative; }
+    .canvas-inner[hidden] { display: none !important; }
 
     .empty {
       display: grid;
       min-height: 400px;
       place-items: center;
-      color: #94a3b8;
+      color: var(--muted);
       text-align: center;
       font-size: 13px;
     }
@@ -763,7 +785,7 @@
     .bead-tip {
       position: absolute;
       z-index: 20;
-      background: rgba(15,23,42,.92);
+      background: rgba(23,20,18,.94);
       color: #fff;
       padding: 6px 10px;
       border-radius: 6px;
@@ -806,16 +828,16 @@
     .float-fit:active { opacity: .7; }
     .float-fit[hidden] { display: none !important; }
 
-    .empty strong { font-size: 14px; color: #64748b; display: block; margin-bottom: 4px; }
+    .empty strong { font-size: 14px; color: var(--muted); display: block; margin-bottom: 4px; }
 
     .stat {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 10px 0;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid var(--line);
       font-size: 13px;
-      color: #64748b;
+      color: var(--muted);
     }
 
     .stat b {
@@ -837,20 +859,25 @@
       padding: 6px 10px 6px 32px;
       font: inherit;
       font-size: 12px;
-      background: #f8fafc;
+      background: rgba(255,255,255,.05);
       color: var(--ink);
     }
 
     .legend-search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 
     .legend-search::before {
-      content: "🔍";
+      content: "";
       position: absolute;
       left: 10px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 12px;
+      width: 13px;
+      height: 13px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23A8A29E" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>') center/contain no-repeat;
     }
+
+    /* inline icons inherit text color and align with text */
+    svg.i { vertical-align: -2px; display: inline-block; }
 
     .legend {
       margin-top: 10px;
@@ -872,14 +899,14 @@
       transition: background .15s;
     }
 
-    .legend-item:hover { background: #f8fafc; }
+    .legend-item:hover { background: rgba(255,255,255,.05); }
     .legend-item.filtered { display: none; }
 
     .swatch {
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      border: 2px solid #fff;
+      border: 2px solid rgba(255,255,255,.25);
       box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     }
 
@@ -917,8 +944,9 @@
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%) translateY(60px);
-      background: var(--ink);
-      color: #fff;
+      background: #171412;
+      color: var(--ink);
+      border: 1px solid rgba(234,88,12,.4);
       padding: 10px 20px;
       border-radius: 8px;
       font-size: 12px;
@@ -954,7 +982,7 @@
         left: 0; right: 0; bottom: 0;
         z-index: 60;
         padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-        background: rgba(15,23,42,.94);
+        background: rgba(23,20,18,.94);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
         border-top: 1px solid rgba(255,255,255,.1);
@@ -968,7 +996,7 @@
         cursor: pointer;
       }
       .mobile-bar .m-generate { background: var(--accent); color: #fff; }
-      .mobile-bar .m-secondary { background: rgba(255,255,255,.1); color: #e2e8f0; }
+      .mobile-bar .m-secondary { background: rgba(255,255,255,.1); color: var(--ink-2); }
       .mobile-bar button:disabled { opacity: .35; }
       main { padding-bottom: 96px; }
       aside { padding-bottom: 96px; }
@@ -977,14 +1005,14 @@
       position: fixed;
       inset: 0;
       z-index: 70;
-      background: rgba(15,23,42,.5);
+      background: rgba(12,10,9,.6);
       display: none;
     }
     .sheet-overlay.open { display: block; }
     .sheet {
       position: fixed;
       left: 0; right: 0; bottom: 0;
-      background: #fff;
+      background: var(--panel);
       border-radius: 18px 18px 0 0;
       padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
       box-shadow: 0 -12px 40px rgba(0,0,0,.2);
@@ -1116,7 +1144,7 @@
       position: fixed;
       inset: 0;
       z-index: 58;
-      background: rgba(15,23,42,.55);
+      background: rgba(12,10,9,.6);
       display: none;
     }
     .drawer-overlay.open { display: block; }
@@ -1163,13 +1191,13 @@
 <body>
   <div class="app">
     <aside>
-      <h1>拼豆图纸生成器</h1>
+      <h1>拼豆图纸生成器 <span class="brand-latin">Pindou Studio</span></h1>
       <p class="sub">导入图片，自动像素化成拼豆格子图，并生成颜色编号和豆子用量。</p>
 
       <!-- Credits bar -->
       <div class="credits-bar">
         <div class="credits-bar-left">
-          <span class="coin">🪙</span>
+          <span class="coin"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg></span>
           <span class="credits-num" id="creditsNum">0</span>
           <span class="credits-label">积分</span>
         </div>
@@ -1179,7 +1207,7 @@
       <div class="group">
         <div class="drop-zone" id="dropZone">
           <input id="file" type="file" accept="image/*">
-          <div class="drop-zone-icon">📎</div>
+          <div class="drop-zone-icon"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="30" height="30" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
           <div class="drop-zone-text">点击选择或<b>拖拽图片</b></div>
         </div>
         <div class="thumb-wrap" id="thumbWrap">
@@ -1317,11 +1345,11 @@
       <div class="group">
         <div class="progress-bar" id="progress"><div class="progress-bar-fill" id="progressFill"></div></div>
         <div class="buttons">
-          <button id="generate">生成图纸 <span class="cdk-cost">🪙1</span></button>
+          <button id="generate">生成图纸 <span class="cdk-cost"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg>1</span></button>
           <button id="print" class="ghost">打印</button>
-          <button id="png" class="secondary" disabled>导出 PNG <span class="cdk-cost">🪙1</span></button>
+          <button id="png" class="secondary" disabled>导出 PNG <span class="cdk-cost"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg>1</span></button>
           <button id="pixelArt" class="secondary" disabled>导出像素画 PNG</button>
-          <button id="pagedPng" class="secondary wide" disabled>导出分页 PNG <span class="cdk-cost">🪙2</span></button>
+          <button id="pagedPng" class="secondary wide" disabled>导出分页 PNG <span class="cdk-cost"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg>2</span></button>
           <button id="materials" class="secondary" disabled>导出清单</button>
         </div>
       </div>
@@ -1375,8 +1403,8 @@
   <!-- Mobile bottom action bar -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <div class="mobile-bar" id="mobileBar">
-    <button type="button" id="mSettings" class="m-secondary">⚙️ 设置</button>
-    <button type="button" id="mGenerate" class="m-generate">生成图纸 <span class="cdk-cost">🪙1</span></button>
+    <button type="button" id="mSettings" class="m-secondary"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> 设置</button>
+    <button type="button" id="mGenerate" class="m-generate">生成图纸 <span class="cdk-cost"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg>1</span></button>
     <button type="button" id="mExport" class="m-secondary" disabled>导出</button>
   </div>
 
@@ -1384,9 +1412,9 @@
   <div class="sheet-overlay" id="exportSheet">
     <div class="sheet">
       <div class="sheet-title">导出</div>
-      <button type="button" id="sPng">导出图纸 PNG <span class="cdk-cost">🪙1</span></button>
+      <button type="button" id="sPng">导出图纸 PNG <span class="cdk-cost"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg>1</span></button>
       <button type="button" id="sPixelArt">导出像素画 PNG</button>
-      <button type="button" id="sPagedPng">导出分页 PNG <span class="cdk-cost">🪙2</span></button>
+      <button type="button" id="sPagedPng">导出分页 PNG <span class="cdk-cost"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg>2</span></button>
       <button type="button" id="sMaterials">导出颜色清单</button>
       <button type="button" id="sheetClose" class="sheet-cancel">取消</button>
     </div>
