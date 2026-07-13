@@ -892,6 +892,36 @@
       background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23A8A29E" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>') center/contain no-repeat;
     }
 
+    .watch-tutorial {
+      margin-top: 14px;
+      background: transparent;
+      border: 1px solid var(--line-light);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 8px 16px;
+    }
+    .watch-tutorial:hover { border-color: var(--accent); opacity: 1; }
+
+    .tutorial-btn { width: 100%; margin-top: 8px; font-size: 12px; }
+
+    .video-modal { max-width: 880px; width: 94%; padding: 18px; }
+    .video-modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .video-modal-head h2 { margin: 0; }
+    .video-modal-head button { min-height: 34px; padding: 6px 14px; }
+    .video-modal video {
+      width: 100%;
+      border-radius: 10px;
+      background: #000;
+      display: block;
+    }
+
     /* inline icons inherit text color and align with text */
     svg.i { vertical-align: -2px; display: inline-block; }
 
@@ -1232,6 +1262,7 @@
           <span class="credits-label">积分</span>
         </div>
         <button type="button" id="openCdkBtn">兑换 CDK</button>
+        <button type="button" class="ghost tutorial-btn" id="openTutorial">▶ 使用教程</button>
       </div>
 
       <div class="group">
@@ -1408,6 +1439,7 @@
               <div>
                 <strong>把图片变成拼豆图纸</strong>
                 <br>点击此处导入图片，然后点「生成图纸」。
+                <br><button type="button" class="watch-tutorial" id="watchTutorial">▶ 观看使用教程</button>
               </div>
             </div>
             <div class="canvas-inner" id="canvasInner" hidden>
@@ -1448,6 +1480,17 @@
       <button type="button" id="sPagedPng">导出分页 PNG <span class="cdk-cost"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10.5c0-1 1-1.7 2.5-1.7s2.5.7 2.5 1.7-1 1.4-2.5 1.7-2.5.7-2.5 1.7 1 1.7 2.5 1.7 2.5-.7 2.5-1.7"/></svg>2</span></button>
       <button type="button" id="sMaterials">导出颜色清单</button>
       <button type="button" id="sheetClose" class="sheet-cancel">取消</button>
+    </div>
+  </div>
+
+  <!-- Tutorial Video Modal -->
+  <div class="modal-overlay" id="videoModal">
+    <div class="modal video-modal">
+      <div class="video-modal-head">
+        <h2>使用教程</h2>
+        <button type="button" id="videoClose" class="ghost">关闭</button>
+      </div>
+      <video id="tutorialVideo" src="tutorial.mp4" controls playsinline preload="none"></video>
     </div>
   </div>
 
@@ -3012,6 +3055,20 @@
     });
     drawerOverlay.addEventListener("click", closeDrawer);
 
+    // tutorial video modal
+    const videoModal = $("videoModal");
+    const tutorialVideo = $("tutorialVideo");
+    function openTutorialModal() {
+      closeDrawer();
+      videoModal.classList.add("open");
+      tutorialVideo.play().catch(() => {});
+    }
+    $("openTutorial").addEventListener("click", openTutorialModal);
+    $("videoClose").addEventListener("click", () => { videoModal.classList.remove("open"); tutorialVideo.pause(); });
+    videoModal.addEventListener("click", (e) => {
+      if (e.target === videoModal) { videoModal.classList.remove("open"); tutorialVideo.pause(); }
+    });
+
     $("mLegend").addEventListener("click", () => {
       if (summaryEl.classList.contains("open")) { closeDrawer(); return; }
       asideEl.classList.remove("open");
@@ -3027,7 +3084,11 @@
     mExportButton.addEventListener("click", () => exportSheet.classList.add("open"));
 
     // tapping the empty canvas area opens the image picker
-    empty.addEventListener("click", () => file.click());
+    // (delegated: the tutorial button inside survives innerHTML swaps)
+    empty.addEventListener("click", (e) => {
+      if (e.target.closest("#watchTutorial")) { openTutorialModal(); return; }
+      file.click();
+    });
     $("sheetClose").addEventListener("click", () => exportSheet.classList.remove("open"));
     exportSheet.addEventListener("click", (e) => {
       if (e.target === exportSheet) exportSheet.classList.remove("open");
